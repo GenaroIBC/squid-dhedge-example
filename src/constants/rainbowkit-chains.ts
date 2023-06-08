@@ -1,6 +1,6 @@
 import { Chain } from "@rainbow-me/rainbowkit"
 import ENV from "../config/env"
-import { mainnet, avalanche, polygon } from "wagmi/chains"
+import { mainnet, avalanche, polygon, optimism, arbitrum } from "wagmi/chains"
 
 const avalancheLocalChain: Chain = {
   id: 43_114,
@@ -65,4 +65,4 @@ const polygonLocalChain: Chain = {
 
 export const CHAINS = import.meta.env.DEV
   ? [avalancheLocalChain, ethereumLocalChain, polygonLocalChain]
-  : [mainnet, avalanche, polygon]
+  : [mainnet, avalanche, polygon, arbitrum, optimism]

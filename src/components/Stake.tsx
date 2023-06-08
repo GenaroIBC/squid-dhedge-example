@@ -1,6 +1,6 @@
 import { ConnectButton } from "@rainbow-me/rainbowkit"
 import { useCallback, useEffect, useRef, useState } from "react"
-import { stakeMGLMR } from "../services/stakeMGLMR"
+import { stakeWRC } from "../services/stakeWRC"
 import type { ChainData, RouteData, TokenData } from "@0xsquid/sdk"
 import { ethers } from "ethers"
 import { List } from "./shared/List"
@@ -12,10 +12,12 @@ import { StakingStatus } from "./StakingStatus"
 import { AmountForm } from "./shared/AmountForm"
 import { getTokenPrice } from "../services/getTokenPrice"
 import { useNetwork, useSigner } from "wagmi"
-import { quoteStakedMGLMR } from "../services/quoteStakedMGLMR"
+import { quoteWRCToken } from "../services/quoteWRCToken"
 import { switchNetwork } from "wagmi/actions"
 import { getMGLMRBalance } from "../services/getMGLMRBalance"
 import { TokenBalance } from "./TokenBalance"
+import { WRCTokenSection } from "./WRCTokenSection"
+import { ArrowDownIcon } from "./shared/ArrowDownIcon"
 
 export function Stake() {
   const currentNetwork = useNetwork()
@@ -49,7 +51,7 @@ export function Stake() {
     setIsStaking(true)
     setError(null)
     setStatus(null)
-    stakeMGLMR({
+    stakeWRC({
       signer: signer.data,
       route
     })
@@ -103,7 +105,7 @@ export function Stake() {
       return
     setIsFetchingQuote(true)
     setRoute(null)
-    quoteStakedMGLMR({
+    quoteWRCToken({
       fromChain: Number(chainId),
       fromToken: address,
       weiAmount: ethers.utils.parseUnits(amount, decimals).toString(),
@@ -189,7 +191,7 @@ export function Stake() {
       </nav>
 
       {signer.data && (
-        <section className="flex flex-col items-center justify-center gap-2 my-20 max-w-md mx-auto">
+        <section className="flex flex-col items-center justify-center my-20 max-w-md mx-auto">
           <div className={isFetchingUserBalance ? "animate-pulse" : ""}>
             <TokenBalance
               balance={String(mglmrBalance ?? 0)}
@@ -197,7 +199,7 @@ export function Stake() {
             />
           </div>
 
-          <article className="flex gap-2 items-center justify-between bg-blue-950 p-4 rounded-md">
+          <article className="flex gap-2 items-center justify-between bg-blue-950 p-4 rounded-tr-md rounded-tl-md">
             <div className="flex flex-col gap-2 w-1/2 overflow-hidden">
               <AmountForm
                 debounceTime={500}
@@ -217,28 +219,6 @@ export function Stake() {
                   ${tokenPrice.toFixed(2)}
                 </span>
               )}
-              <div className="text-xs text-gray-400 flex gap-0.5">
-                <span>you will get</span>
-                {isFetchingQuote ? (
-                  <div className="flex items-center relative text-transparent">
-                    <span className="select-none">
-                      {(Number(route?.estimate.toAmount ?? 0) / 1e18).toFixed(
-                        2
-                      )}
-                    </span>
-                    <div className="absolute h-2 w-full bg-gray-400 rounded-full animate-pulse"></div>
-                  </div>
-                ) : (
-                  <span className="text-white">
-                    {!amount
-                      ? (0).toFixed(2)
-                      : (Number(route?.estimate.toAmount ?? 0) / 1e18).toFixed(
-                          2
-                        )}
-                  </span>
-                )}
-                <span>GLMR</span>
-              </div>
             </div>
 
             <div className="flex flex-col items-end gap-2">
@@ -299,8 +279,17 @@ export function Stake() {
             </div>
           </article>
 
+          <div className="z-0 relative w-full flex justify-center items-center bg-blue-950 after:content-[''] after:w-full after:h-0.5 after:bg-gray-500 after:absolute after:z-10">
+            <ArrowDownIcon />
+          </div>
+
+          <WRCTokenSection
+            amount={(Number(route?.estimate.toAmount ?? 0) / 1e18).toFixed(2)}
+            isLoadingAmount={isFetchingQuote}
+          />
+
           <button
-            className="bg-blue-500 flex justify-center items-center py-2 px-4 text-white w-full"
+            className="bg-blue-500 flex justify-center items-center py-2 px-4 text-white w-full mt-4"
             disabled={
               isStaking ||
               !Number(amount) ||

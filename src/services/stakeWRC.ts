@@ -9,7 +9,7 @@ type Params = {
   route: RouteData
 }
 
-export async function stakeMGLMR({
+export async function stakeWRC({
   signer,
   route
 }: Params): Promise<KnownResponse<ethers.providers.TransactionResponse>> {

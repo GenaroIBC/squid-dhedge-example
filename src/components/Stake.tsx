@@ -228,9 +228,9 @@ export function Stake() {
                     <img
                       className="w-6 h-6 aspect-square rounded-full"
                       src={selectedChain.chainIconURI}
-                      alt={selectedChain.chainName}
+                      alt={selectedChain.networkName}
                     />
-                    {selectedChain.chainName}
+                    {selectedChain.networkName}
                   </span>
                 }
               >
@@ -240,9 +240,9 @@ export function Stake() {
                     .map((chain, i) => (
                       <ListItem
                         key={i}
-                        imgAlt={chain.chainName}
+                        imgAlt={chain.networkName}
                         imgSrc={chain.chainIconURI}
-                        title={chain.chainName}
+                        title={chain.networkName}
                         subtitle={chain.nativeCurrency.symbol}
                         onClick={() => handleChangeChain(chain)}
                       />

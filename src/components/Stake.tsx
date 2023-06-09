@@ -14,10 +14,11 @@ import { getTokenPrice } from "../services/getTokenPrice"
 import { useNetwork, useSigner } from "wagmi"
 import { quoteWRCToken } from "../services/quoteWRCToken"
 import { switchNetwork } from "wagmi/actions"
-import { getMGLMRBalance } from "../services/getMGLMRBalance"
+import { getWRCBalance } from "../services/getWRCBalance"
 import { TokenBalance } from "./TokenBalance"
 import { WRCTokenSection } from "./WRCTokenSection"
 import { ArrowDownIcon } from "./shared/ArrowDownIcon"
+import { RefreshIcon } from "./shared/RefreshIcon"
 
 export function Stake() {
   const currentNetwork = useNetwork()
@@ -43,7 +44,7 @@ export function Stake() {
   const [isStaking, setIsStaking] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [route, setRoute] = useState<RouteData | null>(null)
-  const [mglmrBalance, setMglmrBalance] = useState<string | null>(null)
+  const [wrcBalance, setWrcBalance] = useState<string | null>(null)
 
   const handleStake = () => {
     if (!signer.data || !route) return
@@ -58,7 +59,7 @@ export function Stake() {
       .then(response => {
         if (!response.ok) return setError(response.error)
         setStatus(response.data)
-        updateMGLMRBalance({ delay: 3000 })
+        handleUpdateWRCBalance({ delay: 15000 })
       })
       .finally(() => setIsStaking(false))
   }
@@ -81,17 +82,17 @@ export function Stake() {
     handleGetTokenPrice({ token })
   }
 
-  const updateMGLMRBalance = useCallback(
+  const handleUpdateWRCBalance = useCallback(
     async ({ delay }: { delay: number }) => {
       setIsFetchingUserBalance(true)
 
       setTimeout(() => {
         if (!signer.data) return
 
-        getMGLMRBalance({ signer: signer.data }).then(result => {
+        getWRCBalance({ signer: signer.data }).then(result => {
           setIsFetchingUserBalance(false)
           if (!result.ok) return
-          setMglmrBalance(result.data)
+          setWrcBalance(result.data)
         })
       }, delay)
     },
@@ -168,8 +169,8 @@ export function Stake() {
   }, [selectedToken])
 
   useEffect(() => {
-    updateMGLMRBalance({ delay: 0 })
-  }, [updateMGLMRBalance, signer.data])
+    handleUpdateWRCBalance({ delay: 0 })
+  }, [handleUpdateWRCBalance, signer.data])
 
   return (
     <section className="flex mx-auto flex-col gap-2 p-4 rounded-md h-screen bg-slate-900">
@@ -192,11 +193,23 @@ export function Stake() {
 
       {signer.data && (
         <section className="flex flex-col items-center justify-center my-20 max-w-md mx-auto">
-          <div className={isFetchingUserBalance ? "animate-pulse" : ""}>
+          <div
+            className={`${
+              isFetchingUserBalance ? "animate-pulse" : ""
+            } flex gap-2 items-center`}
+          >
             <TokenBalance
-              balance={String(mglmrBalance ?? 0)}
-              tokenName="mGLMR"
+              balance={Number(ethers.utils.formatEther(String(wrcBalance ?? 0)))
+                .toFixed(4)
+                .toString()}
+              tokenName="WRC"
             />
+            <button
+              onClick={() => handleUpdateWRCBalance({ delay: 0 })}
+              className="bg-transparent p-2 text-sm"
+            >
+              <RefreshIcon />
+            </button>
           </div>
 
           <article className="flex gap-2 items-center justify-between bg-blue-950 p-4 rounded-tr-md rounded-tl-md">

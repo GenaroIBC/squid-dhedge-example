@@ -1,13 +1,14 @@
 import { ethers } from "ethers"
-import { MOONWELL_GLMR_CONTRACT_ADDRESS } from "../constants"
+import { WRC_CONTRACT_ADDRESS } from "../constants"
 import ENV from "../config/env"
 import { KnownResponse } from "../types"
+import wrcAbi from "../abi/wrcTokenAbi.json"
 
 type Params = {
   signer: ethers.Signer | ethers.Wallet
 }
 
-export async function getMGLMRBalance({
+export async function getWRCBalance({
   signer
 }: Params): Promise<KnownResponse<string>> {
   const address = await signer.getAddress()
@@ -15,15 +16,10 @@ export async function getMGLMRBalance({
   if (!address) return { ok: false, error: "Could not retrieve signer address" }
 
   const provider = new ethers.providers.JsonRpcProvider(
-    ENV.VITE_MOONBEAM_RPC_ENDPOINT
+    ENV.VITE_POLYGON_RPC_ENDPOINT
   )
 
-  const abi = ["function balanceOf(address) view returns (uint256)"]
-  const contract = new ethers.Contract(
-    MOONWELL_GLMR_CONTRACT_ADDRESS,
-    abi,
-    provider
-  )
+  const contract = new ethers.Contract(WRC_CONTRACT_ADDRESS, wrcAbi, provider)
 
   const balance = (await contract.balanceOf(address)) as ethers.BigNumber
 

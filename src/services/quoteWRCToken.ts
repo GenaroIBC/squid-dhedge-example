@@ -36,13 +36,11 @@ export async function quoteWRCToken({
       USDC_CONTRACT_ADDRESS,
       0
     ])
-    console.log("getting route 🖌️")
+
     const { route } = await squidClient.getRoute({
       toAddress: signerAddress,
-      fromChain, // 43114,
-      fromToken, // squidClient.tokens.find(
-      // t => t.symbol.toLowerCase() == "usdc" && t.chainId === 43114
-      // )?.address as string,
+      fromChain,
+      fromToken,
       fromAmount: weiAmount,
       toChain: 137,
       toToken: squidClient.tokens.find(
@@ -72,8 +70,6 @@ export async function quoteWRCToken({
         }
       ]
     })
-
-    console.log({ route })
 
     return { ok: true, data: route }
   } catch (error) {

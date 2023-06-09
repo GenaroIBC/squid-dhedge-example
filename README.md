@@ -18,6 +18,13 @@ useMemo(() => {
 }, [selectedChain.rpc])
 ```
 
+Also, make the necessary imports:
+
+```js
+import ENV from "../config/env"
+import { useMemo } from "react"
+```
+
 ### Setting up the environment
 
 1. Clone the Squid Core repo and install dependencies

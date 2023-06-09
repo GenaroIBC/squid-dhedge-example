@@ -65,15 +65,16 @@ export function Stake() {
   }
 
   const handleChangeChain = (chain: ChainData) => {
-    const firstTokenOnNewChain =
-      squidClient.tokens.find(token => token.chainId === chain.chainId) ??
-      squidClient.tokens[0]
+    switchNetwork({ chainId: Number(chain.chainId) }).then(() => {
+      const firstTokenOnNewChain =
+        squidClient.tokens.find(token => token.chainId === chain.chainId) ??
+        squidClient.tokens[0]
 
-    setSelectedToken(firstTokenOnNewChain)
-    setSelectedChain(chain)
-    handleQuoteToken({ amount })
-    handleGetTokenPrice({ token: firstTokenOnNewChain })
-    switchNetwork({ chainId: Number(chain.chainId) })
+      setSelectedToken(firstTokenOnNewChain)
+      setSelectedChain(chain)
+      handleQuoteToken({ amount })
+      handleGetTokenPrice({ token: firstTokenOnNewChain })
+    })
   }
 
   const handleChangeToken = (token: TokenData) => {

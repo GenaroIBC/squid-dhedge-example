@@ -1,6 +1,6 @@
 import { Chain } from "@rainbow-me/rainbowkit"
 import ENV from "../config/env"
-import { mainnet, avalanche, polygon, optimism, arbitrum } from "wagmi/chains"
+import { mainnet, avalanche, optimism, arbitrum } from "wagmi/chains"
 
 const avalancheLocalChain: Chain = {
   id: 43_114,
@@ -43,26 +43,6 @@ const ethereumLocalChain: Chain = {
   testnet: true
 }
 
-const polygonLocalChain: Chain = {
-  id: 137,
-  name: "Polygon local",
-  network: "polygon",
-  iconUrl: "https://s2.coinmarketcap.com/static/img/coins/64x64/3890.png",
-  iconBackground: "#fff",
-  nativeCurrency: {
-    decimals: 18,
-    name: "Matic",
-    symbol: "MATIC"
-  },
-  rpcUrls: {
-    public: { http: [""] },
-    default: {
-      http: [ENV.VITE_POLYGON_RPC_ENDPOINT]
-    }
-  },
-  testnet: true
-}
-
 export const CHAINS = import.meta.env.DEV
-  ? [avalancheLocalChain, ethereumLocalChain, polygonLocalChain]
-  : [mainnet, avalanche, polygon, arbitrum, optimism]
+  ? [avalancheLocalChain, ethereumLocalChain]
+  : [mainnet, avalanche, arbitrum, optimism]

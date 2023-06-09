@@ -249,7 +249,11 @@ export function Stake() {
               >
                 <List>
                   {squidClient.chains
-                    .filter(chain => chain.chainType !== "cosmos")
+                    .filter(
+                      chain =>
+                        chain.chainType !== "cosmos" &&
+                        !chain.networkName.toLowerCase().includes("polygon")
+                    )
                     .map((chain, i) => (
                       <ListItem
                         key={i}

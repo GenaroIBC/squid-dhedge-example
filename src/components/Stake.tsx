@@ -172,7 +172,7 @@ export function Stake() {
   useEffect(() => {
     handleUpdateWRCBalance({ delay: 0 })
   }, [handleUpdateWRCBalance, signer.data])
-
+  console.log(tokenPrice)
   return (
     <section className="flex mx-auto flex-col gap-2 p-4 rounded-md h-screen bg-slate-900">
       <nav className="flex justify-between w-full gap-2 items-center max-w-5xl mx-auto">
@@ -203,7 +203,7 @@ export function Stake() {
               balance={Number(ethers.utils.formatEther(String(wrcBalance ?? 0)))
                 .toFixed(4)
                 .toString()}
-              tokenName="WRC"
+              tokenName="WRC balance:"
             />
             <button
               onClick={() => handleUpdateWRCBalance({ delay: 0 })}
@@ -229,9 +229,14 @@ export function Stake() {
                   <div className="absolute h-2 w-full bg-gray-400 rounded-full animate-pulse"></div>
                 </div>
               ) : (
-                <span className="text-gray-400 w-full text-sm">
-                  ${tokenPrice.toFixed(2)}
-                </span>
+                <div className="flex flex-col gap-2">
+                  <span className="text-gray-400 w-full text-sm">
+                    price: ${tokenPrice.toFixed(2)}
+                  </span>
+                  <span className="text-gray-400 w-full text-sm">
+                    total: ${(tokenPrice * Number(amount)).toFixed(2)}
+                  </span>
+                </div>
               )}
             </div>
 

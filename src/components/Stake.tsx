@@ -172,7 +172,7 @@ export function Stake() {
   useEffect(() => {
     handleUpdateWRCBalance({ delay: 0 })
   }, [handleUpdateWRCBalance, signer.data])
-  console.log(tokenPrice)
+
   return (
     <section className="flex mx-auto flex-col gap-2 p-4 rounded-md h-screen bg-slate-900">
       <nav className="flex justify-between w-full gap-2 items-center max-w-5xl mx-auto">
@@ -307,7 +307,8 @@ export function Stake() {
           </div>
 
           <WRCTokenSection
-            amount={(Number(route?.estimate.toAmount ?? 0) / 1e18).toFixed(2)}
+            fromAmount={amount}
+            fromTokenPrice={tokenPrice}
             isLoadingAmount={isFetchingQuote}
           />
 

@@ -1,27 +1,32 @@
 import { useEffect, useState } from "react"
-import { getTokenPrice } from "../services/getTokenPrice"
-import { POLYGON_CHAIN_ID, WRC_CONTRACT_ADDRESS } from "../constants"
+import { getWRCPrice } from "../services/getWRCPrice"
 
 type Props = {
-  amount: string
+  fromAmount: string
   isLoadingAmount: boolean
+  fromTokenPrice: number
 }
 
-export function WRCTokenSection({ amount, isLoadingAmount }: Props) {
-  const [tokenPrice, setTokenPrice] = useState(0)
+export function WRCTokenSection({
+  fromAmount,
+  isLoadingAmount,
+  fromTokenPrice
+}: Props) {
+  const [wrcTokenPrice, setWrcTokenPrice] = useState(0)
   const [isFetchingTokenPrice, setIsFetchingTokenPrice] = useState(false)
 
+  const estimatedWRCAmount = String(
+    Number(fromAmount) * (wrcTokenPrice / fromTokenPrice)
+  )
+
   useEffect(() => {
-    setTokenPrice(0)
+    setWrcTokenPrice(0)
     setIsFetchingTokenPrice(true)
-    getTokenPrice({
-      chainId: String(POLYGON_CHAIN_ID),
-      tokenAddress: WRC_CONTRACT_ADDRESS
-    })
+    getWRCPrice()
       .then(result => {
         if (!result.ok) return
 
-        return setTokenPrice(3.54)
+        return setWrcTokenPrice(result.data.price)
       })
       .finally(() => {
         setIsFetchingTokenPrice(false)
@@ -34,12 +39,12 @@ export function WRCTokenSection({ amount, isLoadingAmount }: Props) {
         <form className="relative flex flex-col gap-2 justify-center w-full font-bold text-2xl">
           {isLoadingAmount ? (
             <div className="flex items-center relative text-transparent w-fit">
-              <span className="select-none">{amount}</span>
+              <span className="select-none">{estimatedWRCAmount}</span>
               <div className="absolute h-4 w-full bg-gray-400 rounded-full animate-pulse"></div>
             </div>
           ) : (
             <span className="text-white">
-              {!amount ? (0).toFixed(2) : amount}
+              {!estimatedWRCAmount ? (0).toFixed(2) : estimatedWRCAmount}
             </span>
           )}
         </form>
@@ -51,7 +56,7 @@ export function WRCTokenSection({ amount, isLoadingAmount }: Props) {
           </div>
         ) : (
           <span className="text-gray-400 w-full text-sm">
-            ${tokenPrice.toFixed(2)}
+            ${wrcTokenPrice.toFixed(2)}
           </span>
         )}
       </div>

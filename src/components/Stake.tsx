@@ -19,6 +19,7 @@ import { TokenBalance } from "./TokenBalance"
 import { WRCTokenSection } from "./WRCTokenSection"
 import { ArrowDownIcon } from "./shared/ArrowDownIcon"
 import { RefreshIcon } from "./shared/RefreshIcon"
+import { StakingResult } from "../types"
 
 export function Stake() {
   const currentNetwork = useNetwork()
@@ -33,8 +34,7 @@ export function Stake() {
   )
   const signer = useSigner()
 
-  const [status, setStatus] =
-    useState<ethers.providers.TransactionResponse | null>(null)
+  const [status, setStatus] = useState<StakingResult | null>(null)
   const [amount, setAmount] = useState("0")
   const [tokenPrice, setTokenPrice] = useState(0)
   const [isFetchingQuote, setIsFetchingQuote] = useState(false)

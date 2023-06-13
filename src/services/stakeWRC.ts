@@ -1,4 +1,4 @@
-import type { KnownResponse } from "../types"
+import type { KnownResponse, StakingResult } from "../types"
 import { SquidError } from "@0xsquid/sdk/dist/error"
 import squid from "../lib/squidClient"
 import { ethers } from "ethers"
@@ -12,18 +12,20 @@ type Params = {
 export async function stakeWRC({
   signer,
   route
-}: Params): Promise<KnownResponse<ethers.providers.TransactionResponse>> {
+}: Params): Promise<KnownResponse<StakingResult>> {
   try {
     const tx = await squid.executeRoute({
       signer,
       route
     })
 
-    await tx.wait()
+    const { transactionHash } = await tx.wait()
+
+    const axelarScanLink = `https://axelarscan.io/gmp/${transactionHash}`
 
     return {
       ok: true,
-      data: tx
+      data: { tx, axelarScanLink }
     }
   } catch (error) {
     return {
